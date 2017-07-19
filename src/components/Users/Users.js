@@ -1,12 +1,23 @@
 import React from 'react';
+import { routerRedux } from 'dva/router';
 import styles from './Users.css';
 import { connect } from 'dva';
 import { Table, Pagination, Popconfirm } from 'antd';
 import { PAGE_SIZE } from '../../constants';
 
-function Users({list:dataSource, total, page:current}) {
+function Users({list:dataSource, total, page:current, loading, dispatch}) {
     function deleteHandler(id) {
-        console.warn(`TODO: ${id}`);
+        dispatch({
+            type: 'users/remove',
+            payload: id,
+        });
+    }
+
+    function changePageHandler(page) {
+        dispatch(routerRedux.push({
+            pathname:'/users',
+            query:{page},
+        }));
     }
 
     const columns = [
@@ -48,12 +59,14 @@ function Users({list:dataSource, total, page:current}) {
                     dataSource={dataSource}
                     rowKey={record => record.id}
                     pagination={false}
+                    loading={loading}
                 />
                 <Pagination
                     className="ant-table-pagination"
                     total={total}
                     current={current}
                     pageSize={PAGE_SIZE}
+                    onChange={changePageHandler}
                 />
             </div>
         </div>
@@ -67,6 +80,7 @@ function mapStateToProps(state) {
         list,
         total,
         page,
+        loading:state.loading.models.users,
     };
 }
 

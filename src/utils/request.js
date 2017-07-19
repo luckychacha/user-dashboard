@@ -27,7 +27,6 @@ export default async function request(url, options) {
     .then(parseJSON)
     .then(data => ({ data }))
     .catch(err => ({ err }));*/
-  console.log(url);
 
   const response = await fetch(url, options);
   checkStatus(response);
